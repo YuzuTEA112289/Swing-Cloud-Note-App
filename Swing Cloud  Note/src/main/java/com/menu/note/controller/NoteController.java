@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 
@@ -35,7 +36,7 @@ public class NoteController {
         } catch (Exception e) {  //失败时返回错误信息
             System.err.println("Database saving exception: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Internal server error: Save failed due to database issues.");
+                .body("Internal server error: Save failed due to database issues.");
         }
     }
 
@@ -44,5 +45,5 @@ public class NoteController {
         return noteRepository.findAll();
     }
 
-    }
+}
 

@@ -13,12 +13,13 @@ public class Note {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 自增 ID
     private Long id;
 
-    @Column(nullable = false, length = 255) // 保证标题不能为空，限定最大长度
+    @Column(nullable = false, length = 255) // 标题不为空
     private String title;
 
-    @Column(nullable = false, columnDefinition = "TEXT") // 保证内容不能为空，并声明为长文本
+    @Column(nullable = false, columnDefinition = "TEXT") // 内容不为空
     private String content;
 
-    public Note() {} // JPA 需要无参构造函数
+    public Note() {
+    } // JPA 需要无参构造函数
 
 }

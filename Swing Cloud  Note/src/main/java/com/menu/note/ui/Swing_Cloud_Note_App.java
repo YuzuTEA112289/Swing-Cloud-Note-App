@@ -43,10 +43,14 @@ public class Swing_Cloud_Note_App extends JFrame implements ActionListener {
         // --- File Menu ---
         JMenu fileMenu = new JMenu("File");
         addMenuItem(fileMenu, "New");
-        addMenuItem(fileMenu, "Open");
-        addMenuItem(fileMenu, "Save As");
-        // --- Cloud Menu ---
-        addMenuItem(fileMenu, "Load from Cloud");
+        JMenu openSubMenu = new JMenu("Open");
+        addMenuItem(openSubMenu, "From Local");
+        addMenuItem(openSubMenu, "From Cloud");
+        fileMenu.add(openSubMenu);
+        JMenu saveAsSubMenu = new JMenu("Save As  ");
+        addMenuItem(saveAsSubMenu, "Local File");
+        addMenuItem(saveAsSubMenu, "Cloud File");
+        fileMenu.add(saveAsSubMenu);
         fileMenu.addSeparator();
         addMenuItem(fileMenu, "Exit");
 
@@ -59,12 +63,12 @@ public class Swing_Cloud_Note_App extends JFrame implements ActionListener {
 
         // --- Configure Menu ---
         JMenu configMenu = new JMenu("Configure");
-        JMenu colorMenu = new JMenu("Set Color");
+        JMenu colorMenu = new JMenu("Set Color  ");
         addMenuItem(colorMenu, "Set Background Color");
         addMenuItem(colorMenu, "Set Font Color");
         configMenu.add(colorMenu);
 
-        JMenu fontMenu = new JMenu("Set Font");
+        JMenu fontMenu = new JMenu("Set Font  ");
         addMenuItem(fontMenu, "Set Font Size");
         configMenu.add(fontMenu);
 
@@ -103,26 +107,39 @@ public class Swing_Cloud_Note_App extends JFrame implements ActionListener {
         if (cmd.equals("New")) {
             int s = JOptionPane.showConfirmDialog(this, "Are you sure to build new one?\n", "New", JOptionPane.YES_NO_OPTION);
             if (s == JOptionPane.YES_OPTION) JTA.setText("");
-        } else if (cmd.equals("Open")) {
+        }  // 从本地打开文件
+        else if (cmd.equals("From Local")) {
             if (JFC.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 File file = JFC.getSelectedFile();
                 try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                    JTA.read(reader, null); // 自动读取文件内容到Textarea
+                    JTA.read(reader, null);
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(this, "File read error!");
                 }
             }
-        } else if (cmd.equals("Save As")) {
+        }
+        // 从云端数据库打开文件
+        else if (cmd.equals("From Cloud")) {
+            loadNotesFromCloud();
+        }
+        // 保存到本地
+        else if (cmd.equals("Local File")) {
+            if (JFC.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                File file = JFC.getSelectedFile();
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                    JTA.write(writer);
+                    JOptionPane.showMessageDialog(this, "Note saved to local successfully!!");
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Local save error!");
+                }
+            }
+        }
+        // 保存到云端数据库
+        else if (cmd.equals("Cloud File")) {
             String title = JOptionPane.showInputDialog(this, "Enter note title:", "Save Note to Cloud", JOptionPane.QUESTION_MESSAGE);
             if (title != null && !title.trim().isEmpty()) {
-                String content = JTA.getText(); // 获取文本框内容
-                System.out.println("Synchronizing to the database...");
-                uploadToCloud(title, content); // 调用下面这个方法
-            } else {
-                JOptionPane.showMessageDialog(this, "Title cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
+                uploadToCloud(title, JTA.getText());
             }
-        } else if (cmd.equals("Load from Cloud")) {// 加载云端笔记
-            loadNotesFromCloud();
         } else if (cmd.equals("Exit")) {
             if (JOptionPane.showConfirmDialog(this, "Exit Program?", "Exit", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
                 System.exit(0);
@@ -161,7 +178,7 @@ public class Swing_Cloud_Note_App extends JFrame implements ActionListener {
         // --- Help 功能逻辑 ---
         else if (cmd.equals("About")) {
             JOptionPane.showMessageDialog(this,
-                    "Project: Welcome to Swing Cloud Note App!\n",
+                    "Project: Welcome to Swing Cloud Note!\n",
                     "About", JOptionPane.INFORMATION_MESSAGE);
         }
     }
