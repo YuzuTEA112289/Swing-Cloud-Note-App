@@ -26,7 +26,6 @@ public class Swing_Cloud_Note_App extends JFrame implements ActionListener {
 
     // 定义后端服务地址
     private static final String API_BASE_URL = "http://localhost:8080/api/notes";
-    // Jackson ObjectMapper 实例
     private final ObjectMapper objectMapper = new ObjectMapper();
 
 
@@ -34,7 +33,7 @@ public class Swing_Cloud_Note_App extends JFrame implements ActionListener {
         // 设置窗体基本属性
         setTitle("The Editor - Swing Cloud Version");
         setSize(800, 600);
-        setLocationRelativeTo(null); // 居中显示
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // 创建菜单栏
@@ -107,7 +106,8 @@ public class Swing_Cloud_Note_App extends JFrame implements ActionListener {
         if (cmd.equals("New")) {
             int s = JOptionPane.showConfirmDialog(this, "Are you sure to build new one?\n", "New", JOptionPane.YES_NO_OPTION);
             if (s == JOptionPane.YES_OPTION) JTA.setText("");
-        }  // 从本地打开文件
+        }
+        // 从本地打开文件
         else if (cmd.equals("From Local")) {
             if (JFC.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 File file = JFC.getSelectedFile();
